@@ -11,7 +11,7 @@ The quantum calculation engine within can be selected to use either G16 or xTB, 
 |---------|---------|---------|
 | xTB | geomeTRIC | free and fast |
 | xTB | G16 | fast and accurate |
-| G16 | G16 | very accurate |
+| G16 | G16 | high accurate |
 
 ## Dependencies
 - Python 3.8.18
