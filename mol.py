@@ -2,6 +2,7 @@ import os
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from subprocess import run,PIPE
+from utils import gen_xtb_sh
 def mol2xyz(mol,xyz_file):
     '''
     将RDKit的分子对象Mol保存成.xyz分子文件
@@ -26,35 +27,44 @@ def mol2xyz(mol,xyz_file):
     with open(xyz_file,'w') as fw:
         fw.writelines('\n'.join(xyz_inform))
 
-def get_opted_geom(xyz_trj):
+def mol2gjf(mol,gjf_file,solvent='',chrg=0,mult=1,g16_param={'method':'b3lyp','basis':'def2svp',
+                                    'nproc':'8','mem':'8GB'},engine='g16'):
     '''
-    获取geomeTRIC优化轨迹文件的最后一帧，也即优化好的结构，保存在后缀是_opted.xyz的文件里
+    将RDKit的分子对象Mol保存成.gjf分子文件
 
     Parameters
     ----------
-    xyz_trj : string
-        geomeTRIC优化轨迹文件.
-
+    mol : TYPE
+        RDKit的分子对象.
+    gjf_file : string
+        .gjf文件路径.
+    g16_param: Dict
+        G16计算参数
     Returns
     -------
-    string
-        优化结构保存的文件名.
+    None.
 
     '''
-    with open(xyz_trj) as fr:
-        lines = fr.readlines()
-    natom = int(lines[0].strip())
-    opted_geom_lst = lines[-(natom+2):]
-    with open(xyz_trj[:-4]+'_opted.xyz','w') as fw:
-        fw.writelines(''.join(opted_geom_lst))
-    return xyz_trj[:-4]+'_opted.xyz'
-HA2KJ = 2625.5002
+    symbols = [at.GetSymbol() for at in mol.GetAtoms()]
+    positions = mol.GetConformer().GetPositions()
+    g16_kwd = f'#p opt freq {g16_param["method"]}/{g16_param["basis"]}'
+    if solvent != '':
+        g16_kwd += f' scrf=(smd,solvent={solvent})'
+    if engine == 'xtb':
+        g16_kwd += " external='./xtb.sh'"
+    gjf_inform = [f'%nproc={g16_param["nproc"]}',f'%mem={g16_param["mem"]}',g16_kwd,'','Generate by RDKit','',f'{chrg} {mult}']
+    for sym,xyz in zip(symbols,positions):
+        gjf_inform.append(f'{sym:5s} {xyz[0]:15f} {xyz[1]:15f} {xyz[2]:15f}')
+    gjf_inform.append('')
+    gjf_inform.append('')
+    with open(gjf_file,'w') as fw:
+        fw.writelines('\n'.join(gjf_inform))
+
+HA2KCAL = 627.503
 CWD = os.getcwd()
 class Mole():
-    def __init__(self,inchi=None,smiles=None,working_dir='.',fn='temp.xyz',
-                 chrg=0,mult=1,optimizer='G16',engine='G16',method={'method':'b3lyp',
-                                                                    'basis':'defsvp',
-                                                                    'solvent':''}):
+    def __init__(self,inchi=None,smiles=None,working_dir='.',fn='temp',chrg=0,mult=1,optimizer='G16',engine='G16',solvent='',
+                 xtb_param={'gfn':2,'thread':8},g16_param={'method':'b3lyp','basis':'def2svp','nproc':8,'mem':'8GB'}):
         '''
         Molecule object, used for generating and optimizing three-dimensional
         molecular structures as well as for energy calculations.
@@ -70,7 +80,7 @@ class Mole():
             is the current directory.
         fn : string
             The filename for the three-dimensional molecular structure generated 
-            during the process. The default is 'temp.xyz'.
+            during the process. The default is 'temp'.
         chrg : int
             The charge of molecule. The default value is 0.
         mult : int
@@ -81,9 +91,12 @@ class Mole():
         engine : string
             The quantum chemistry computation engine, with options for the
             calculation engine being G16 and xTB. The default is G16.
-        method : dict
-            Parameters of calculation methods, including choices for computational 
-            accuracy and solvent model settings."
+        solvent : string
+            The solvent setting.
+        xtb_param : Dict
+            Parameters for xTB methods
+        g16_param : Dict
+            Parameters for G16 methods
         Returns
         -------
         Molecule object.
@@ -91,17 +104,26 @@ class Mole():
         self.inchi = inchi
         self.smiles = smiles
         self.working_dir = working_dir
-        self.fn = fn
+        self.fn = f'{fn}.xyz' if engine.lower() == 'xtb' else f'{fn}.gjf'
         self.chrg = chrg
         self.mult = mult
-        self.optimizer = optimizer
-        self.engine = engine
-        self.method = method
+        self.optimizer = optimizer.lower()
+        self.engine = engine.lower()
+        self.solvent = solvent
+        self.xtb_param = xtb_param
+        self.g16_param = g16_param
         os.chdir(self.working_dir)
-    def gen_3d_geom(self):
+    
+    def gen_3d_geom(self,ff_opt=True):
         '''
-        使用RDKit解析包含分子2D结构信息的InChI或者SMILES，从而构建2D分子图，
-        然后调用ETKDG将分子图转化为3D结构，并用UFF力场进行简单优化
+        Utilize RDKit to parse InChI or SMILES containing molecular 2D structural information, 
+        thereby constructing a 2D molecular graph. Subsequently, invoke ETKDG to convert the 
+        molecular graph into a 3D structure, and perform a simple optimization using the UFF force field.
+
+        Parameters
+        ----------
+        ff_opt : bool
+            Whether to optimize the molecule using a molecular force field.
 
         Raises
         ------
@@ -123,140 +145,106 @@ class Mole():
             raise ValueError('No input structure')
         mol = AllChem.AddHs(mol)
         flag = AllChem.EmbedMolecule(mol)
-        AllChem.UFFOptimizeMolecule(mol)
+        if ff_opt:
+            AllChem.UFFOptimizeMolecule(mol)
         if flag == -1:
             raise ValueError('3D geometry generation failed')
         else:
-            mol2xyz(mol,self.fn)
+            if self.engine.lower() == 'xtb':
+                mol2xyz(mol,self.fn)
+            elif self.engine.lower() == 'g16':
+                mol2gjf(mol,gjf_file=self.fn,solvent=self.solvent,chrg=self.chrg,mult=self.mult,g16_param=self.g16_param,engine=self.engine)
             self.rdkit_mol = mol
 
-    def optimize(self):
-        '''
-        调用geomeTRIC优化器与xTB方法对分子结构进行优化
-
-        Returns
-        -------
-        None.
-
-        '''
-        cmd = "geometric-optimize --engine ase --ase-class=xtb.ase.calculator.XTB "+\
-            "--ase-kwargs='{\"method\":\"GFN%d-xTB\", \"charge\":%d, \"mult\":%d, \"solvent\":\"%s\"}' "%(self.method,self.chrg,self.mult,self.solvent)+\
-            self.fn
-        result = run(cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,
-                     cwd=None,shell=True,executable='/bin/bash',check=False)
-        opted_fn = get_opted_geom(self.fn[:-4]+'_optim.xyz')
-        self.opted_fn = opted_fn
     def opt_freq(self):
         '''
-        调用geomeTRIC优化器与xTB方法对分子结构进行优化，同时在优化结束后进行频率分析，
-        生成包括Gibbs自由能在内的一系列热力学参数
+        Invoke quantum chemical computation software to further optimize the molecular structure, 
+        and conduct frequency analysis upon completion of the optimization. This allows for the 
+        calculation of a series of thermodynamic parameters, including Gibbs free energy.
 
         Returns
         -------
         None.
 
         '''
-        cmd = "geometric-optimize --engine ase --ase-class=xtb.ase.calculator.XTB "+\
-            "--ase-kwargs='{\"method\":\"GFN%d-xTB\", \"charge\":%d, \"mult\":%d, \"solvent\":\"%s\"}' --hessian first+last "%(self.method,self.chrg,self.mult,self.solvent)+\
-            self.fn
+        if self.engine.lower() == 'xtb' and self.optimizer == 'geometric':
+            cmd = "geometric-optimize --engine ase --ase-class=xtb.ase.calculator.XTB "+\
+                "--ase-kwargs='{\"method\":\"GFN%d-xTB\", \"charge\":%d, \"mult\":%d, \"solvent\":\"%s\"}' --hessian first+last "%(self.method,self.chrg,self.mult,self.solvent)+self.fn
+        elif self.engine.lower() == 'g16' and self.optimizer == 'g16':
+            cmd = f"g16 {self.fn} {self.fn[:-4]}.log"
+        elif self.engine.lower() == 'xtb' and self.optimizer == 'g16':
+            gen_xtb_sh(xtb_sh=f'{self.working_dir}/xtb.sh',thread_num=self.xtb_param['thread'],gfn=self.xtb_param['gfn'])
+            cmd = f"g16 {self.fn} {self.fn[:-4]}.log"
         result = run(cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,
                      cwd=None,shell=True,executable='/bin/bash',check=False)
-        opted_fn = get_opted_geom(self.fn[:-4]+'_optim.xyz')
-        self.opted_fn = opted_fn
 
-    def write_xcontrol(self):
+    def check_log(self):
+        
         '''
-        生成控制xTB计算的中间文件xcontrol
+        Check whether the quantum calculation process has concluded normally. 
 
         Returns
         -------
         None.
 
         '''
-        inform = ['$thermo',f'    temp={self.temperature}']
-        with open('xcontrol','w') as fw:
-            fw.writelines('\n'.join(inform))
-    def read_free_energy_xtb(self,hess_out):
-        '''
-        读取xTB的hessian计算输出文件中的Gibbs自由能信息
-
-        Parameters
-        ----------
-        hess_out : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        TYPE
-            DESCRIPTION.
-
-        '''
-        with open(hess_out,'r') as fr:
+        
+        with open(f'{self.fn[:-4]}.log','r') as fr:
             lines = fr.readlines()
-        for line in reversed(lines):
-            if 'TOTAL FREE ENERGY' in line:
-                gibbs = eval(line.strip().split()[-3])
-                break
-        return gibbs * HA2KJ  ## Hartree to kJ/mol
-    
-    def calc_free_energy_xtb(self):
-        '''
-        调用xTB进行hessian计算，从而获得热力学信息，并读取其中的Gibbs自由能
+        if self.optimizer.lower() == 'geometric':
+            for line in reversed(lines):
+                if 'Converged! =D' in line:
+                    return True
+            return False
+        elif self.optimizer.lower() == 'g16':
+            if ' Normal termination of Gaussian 16' in lines[-1]:
+                return True
+            else:
+                return False
 
-        Returns
-        -------
-        gibbs : TYPE
-            DESCRIPTION.
-
-        '''
-        self.write_xcontrol()
-        cmd = f"xtb {self.opted_fn} --gfn {self.method} --hess --gbsa {self.solvent} --input xcontrol > {self.opted_fn[:-4]}_hess.out"
-        result = run(cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,
-                     cwd=None,shell=True,executable='/bin/bash',check=False)
-        gibbs = self.read_free_energy(f'{self.opted_fn[:-4]}_hess.out')
-        return gibbs
-    def remove_temp_files(self):
-        '''
-        清除计算过程中的临时文件
-
-        Returns
-        -------
-        None.
-
-        '''
-        temp_files = ['g98.out','hessian','vibspectrum','wbo','xcontrol','xtbrestart','xtbtopo.mol','charges']
-        for file in temp_files:
-            if os.path.exists(file):
-                os.remove(file)
     def read_free_energy(self):
         '''
-        从geomeTRIC的日志文件中读取Gibbs自由能
+        Read Gibbs free energy from log file
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        float
+            Gibbs free energy in kcal/mol.
 
         '''
         with open(f'{self.fn[:-4]}.log','r') as fr:
             lines = fr.readlines()
-        for line in reversed(lines):
-            if 'Gibbs Free Energy' in line:
-                gibbs = eval(line.strip().split()[-5])
-                break
-        return gibbs * HA2KJ # convert Hartree to kJ/mol
+        if self.optimizer.lower() == 'geometric':
+            for line in reversed(lines):
+                if 'Gibbs Free Energy' in line:
+                    gibbs = eval(line.strip().split()[-5])
+                    break
+        elif self.optimizer.lower() == 'g16':
+            for line in reversed(lines):
+                if 'Sum of electronic and thermal Free Energies=' in line:
+                    gibbs = eval(line.strip().split()[-1])
+                    break
+        return gibbs * HA2KCAL # convert Hartree to kcal/mol
+    
     def run(self):
         '''
-        执行分子字符串到Gibbs自由能的端到端计算工作流的核心函数。工作流包括：
-        1. 调用gen_3d_geom方法解析InChI或SMILES生成2D分子图，并得到分子的3D结构
-        2. 调用opt_fre方法，对第一步中获得的分子3D结构进行优化，并对优化得到的结构
-           进行频率分析，获得分子的热力学信息
-        3. 调用read_free_energy方法从第二步的日志文件中读取Gibbs自由能信息
+        The core function of the end-to-end computational workflow that transforms molecular strings 
+        into Gibbs free energy. The workflow comprises:
+
+        1. Invoking the gen_3d_geom method to parse InChI or SMILES to generate a 2D molecular graph 
+        and obtain the 3D structure of the molecule.
+
+        2. Calling the opt_freq method to optimize the 3D molecular structure obtained in the first 
+        step, and then performing frequency analysis on the optimized structure to acquire the 
+        thermodynamic information of the molecule.
+
+        3. Utilizing the read_free_energy method to read the Gibbs free energy information 
+        from the log files produced in the second step.
 
         Returns
         -------
-        TYPE
-            DESCRIPTION.
+        float
+            Gibbs free energy.
 
         '''
         # 获得初始化3D几何结构
@@ -265,9 +253,15 @@ class Mole():
         # 优化分子结构并进行频率计算
         print('[INFO] Optimize 3D geometry and frequency calculation...')
         self.opt_freq()
-        # 读取分子吉布斯自由能
-        self.gibbs = self.read_free_energy()
-        print(f'[INFO] Gibbs free energy: {self.gibbs:.2f} kJ/mol')
+        # 检查任务是否正常结束
+        calc_done = self.check_log()
+        if calc_done:
+            # 读取分子吉布斯自由能
+            self.gibbs = self.read_free_energy()
+            print(f'[INFO] Gibbs free energy: {self.gibbs:.2f} kJ/mol')
+        else:
+            self.gibbs = None
+            print(f'[ERROR] Calculation is failed')
         os.chdir(CWD)
         print('[INFO] Done\n')
         return self.gibbs
