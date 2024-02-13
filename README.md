@@ -3,7 +3,7 @@
 ## Introduction 
 This repository hosts a suite of scripts designed for comprehensive end-to-end reaction barrier calculations.
 
-The code in this repository can currently be used to complete the end-to-end calculation of reaction thermodynamic free energy.
+The code in this repository can currently be used to complete the end-to-end calculation of reaction thermodynamic free energy barrier. In the near feature, we will also add the ability to perform calculations of reaction kinetic free energy barrier.
 
 The quantum calculation engine within can be selected to use either G16 or xTB, and the structure optimizer can be chosen from either G16 or geomeTRIC. Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
 
