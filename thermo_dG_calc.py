@@ -31,8 +31,8 @@ def main():
 
     args = parser.parse_args()
     working_dir = args.working_dir
-    rct_inf_lst = eval(args.rct_inf_lst)
-    pdt_inf_lst = eval(args.pdt_inf_lst)
+    rct_inf_lst = eval(args.rct_inf_lst) # (molecule string, coefficient)
+    pdt_inf_lst = eval(args.pdt_inf_lst) # (molecule string, coefficient)
     string_type = args.string_type.lower()
     engine = args.engine.lower()
     optimizer = args.optimizer.lower()
