@@ -106,7 +106,7 @@ class Mole():
         self.inchi = inchi
         self.smiles = smiles
         self.working_dir = working_dir
-        self.fn = f'{fn}.xyz' if engine.lower() == 'xtb' else f'{fn}.gjf'
+        self.fn = f'{fn}.xyz' if optimizer.lower() == 'geometric' else f'{fn}.gjf'
         self.chrg = chrg
         self.mult = mult
         self.optimizer = optimizer.lower()
@@ -152,9 +152,9 @@ class Mole():
         if flag == -1:
             raise ValueError('3D geometry generation failed')
         else:
-            if self.engine.lower() == 'xtb':
+            if self.optimizer.lower() == 'geometric':
                 mol2xyz(mol,self.fn)
-            elif self.engine.lower() == 'g16':
+            elif self.optimizer.lower() == 'g16':
                 mol2gjf(mol,gjf_file=self.fn,solvent=self.solvent,chrg=self.chrg,mult=self.mult,g16_param=self.g16_param,engine=self.engine)
             self.rdkit_mol = mol
 
