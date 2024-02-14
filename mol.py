@@ -175,7 +175,7 @@ class Mole():
         elif self.engine.lower() == 'g16' and self.optimizer == 'g16':
             cmd = f"g16 {self.fn} {self.fn[:-4]}.log"
         elif self.engine.lower() == 'xtb' and self.optimizer == 'g16':
-            gen_xtb_sh(xtb_sh=f'{self.working_dir}/xtb.sh',thread_num=self.xtb_param['thread'],gfn=self.xtb_param['gfn'])
+            gen_xtb_sh(xtb_sh=f'./xtb.sh',thread_num=self.xtb_param['thread'],gfn=self.xtb_param['gfn'])
             cmd = f"g16 {self.fn} {self.fn[:-4]}.log"
         result = run(cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,
                      cwd=None,shell=True,executable='/bin/bash',check=False)
