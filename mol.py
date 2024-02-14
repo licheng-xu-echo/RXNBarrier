@@ -260,7 +260,7 @@ class Mole():
         if calc_done:
             # 读取分子吉布斯自由能
             self.gibbs = self.read_free_energy()
-            print(f'[INFO] Gibbs free energy: {self.gibbs:.2f} kJ/mol')
+            print(f'[INFO] Gibbs free energy: {self.gibbs:.2f} kcal/mol')
         else:
             self.gibbs = None
             print(f'[ERROR] Calculation is failed')
