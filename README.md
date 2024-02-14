@@ -41,7 +41,7 @@ Use **xTB** as the calculation engine and **geomeTRIC** as the structure optimiz
 python thermo_dG_calc.py --working_dir eg_3 --string_type inchi --rct_inf_lst "[('InChI=1S/C14H12O2/c15-13-8-12(9-14(16)10-13)7-6-11-4-2-1-3-5-11/h1-10,15-16H',1),('InChI=1S/O2/c1-2',1/2)]" --pdt_inf_lst "[('InChI=1S/C14H12O3/c15-12-5-3-10(4-6-12)1-2-11-7-13(16)9-14(17)8-11/h1-9,15-17H',1)]" --engine xtb --optimizer geometric --threads_num 8
 ```
 ### Example 4
-To calculate the Gibbs free energy of a single molecule, execute the following code:
+To calculate the Gibbs free energy of a single molecule, execute the following command:
 ```
 python G_calc.py --working_dir eg_4 --string c1ccccc1 --string_type smiles --engine xtb --optimizer g16 --solvent water --threads_num 8 --memory 8GB
 ```
@@ -60,4 +60,4 @@ python G_calc.py --working_dir eg_4 --string c1ccccc1 --string_type smiles --eng
 
 <div id="refer-anchor-4"></div>
 
-- [4] Tian Lu, gau_xtb: A Gaussian interface for xtb code, http://sobereva.com/soft/gau_xtb (accessed Feb 13, 2024)  
+- [4] Lu T., gau_xtb: A Gaussian interface for xtb code, http://sobereva.com/soft/gau_xtb (accessed Feb 13, 2024)  
