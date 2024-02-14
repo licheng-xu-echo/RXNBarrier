@@ -54,20 +54,20 @@ def main():
     pdt_gibbs_lst = []
     for i,rct_inf in enumerate(rct_inf_lst):
         if string_type == 'smiles':
-            mol = Mole(smiles=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
+            mol = Mole(smiles=rct_inf[0],fn=f'rct_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
-            mol = Mole(inchi=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
+            mol = Mole(inchi=rct_inf[0],fn=f'rct_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         rct_gibbs_sum += mol.run() * rct_inf[1]
         rct_gibbs_lst.append(mol.gibbs)
     for i,pdt_inf in enumerate(pdt_inf_lst):
         if string_type == 'smiles':
-            mol = Mole(smiles=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
+            mol = Mole(smiles=pdt_inf[0],fn=f'pdt_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
-            mol = Mole(inchi=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
+            mol = Mole(inchi=pdt_inf[0],fn=f'pdt_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         pdt_gibbs_sum += mol.run() * pdt_inf[1]
         pdt_gibbs_lst.append(mol.gibbs)
     delta_gibbs = pdt_gibbs_sum - rct_gibbs_sum
-    print(f'[INFO] Delta gibbs = {delta_gibbs:.2f} kcal/mol')
+    print(f'[INFO] Delta Gibbs = {delta_gibbs:.2f} kcal/mol')
     max_len = max([len(rct_inf_lst),len(pdt_inf_lst)])
     gibbs_inf_dict = {'Reactant':[item[0] for item in rct_inf_lst]+['']*(max_len-len(rct_inf_lst)),
                       'Reactant Gibbs Free Energy (kcal/mol)': rct_gibbs_lst+['']*(max_len-len(rct_inf_lst)),
