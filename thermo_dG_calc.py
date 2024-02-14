@@ -57,14 +57,22 @@ def main():
             mol = Mole(smiles=rct_inf[0],fn=f'rct_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
             mol = Mole(inchi=rct_inf[0],fn=f'rct_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
-        rct_gibbs_sum += mol.run() * rct_inf[1]
+        mol_gibbs = mol.run()
+        if mol_gibbs is None:
+            print(f'[Error] Calculation failed')
+            return 
+        rct_gibbs_sum += mol_gibbs * rct_inf[1]
         rct_gibbs_lst.append(mol.gibbs)
     for i,pdt_inf in enumerate(pdt_inf_lst):
         if string_type == 'smiles':
             mol = Mole(smiles=pdt_inf[0],fn=f'pdt_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
             mol = Mole(inchi=pdt_inf[0],fn=f'pdt_{i}',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
-        pdt_gibbs_sum += mol.run() * pdt_inf[1]
+        mol_gibbs = mol.run()
+        if mol_gibbs is None:
+            print(f'[Error] Calculation failed')
+            return 
+        pdt_gibbs_sum += mol_gibbs * pdt_inf[1]
         pdt_gibbs_lst.append(mol.gibbs)
     delta_gibbs = pdt_gibbs_sum - rct_gibbs_sum
     print(f'[INFO] Delta Gibbs = {delta_gibbs:.2f} kcal/mol')
