@@ -171,7 +171,7 @@ class Mole():
         '''
         if self.engine.lower() == 'xtb' and self.optimizer == 'geometric':
             cmd = "geometric-optimize --engine ase --ase-class=xtb.ase.calculator.XTB "+\
-                "--ase-kwargs='{\"method\":\"GFN%d-xTB\", \"charge\":%d, \"mult\":%d, \"solvent\":\"%s\"}' --hessian first+last "%(self.method,self.chrg,self.mult,self.solvent)+self.fn
+                "--ase-kwargs='{\"method\":\"GFN%d-xTB\", \"charge\":%d, \"mult\":%d, \"solvent\":\"%s\"}' --hessian first+last "%(self.xtb_param['gfn'],self.chrg,self.mult,self.solvent)+self.fn
         elif self.engine.lower() == 'g16' and self.optimizer == 'g16':
             cmd = f"g16 {self.fn} {self.fn[:-4]}.log"
         elif self.engine.lower() == 'xtb' and self.optimizer == 'g16':
