@@ -7,11 +7,11 @@ The code in this repository can currently be used to complete the end-to-end cal
 
 The quantum calculation engine within can be selected to use either G16[<sup>1</sup>](#refer-anchor-1) or xTB[<sup>2</sup>](#refer-anchor-2), and the structure optimizer can be chosen from either G16 or geomeTRIC[<sup>3</sup>](#refer-anchor-3). Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
 
-| engine | optimizer | features |
+| Engine | Optimizer | Features |
 |---------|---------|---------|
-| xTB | geomeTRIC | free and fast |
-| xTB | G16 | fast and accurate[<sup>4</sup>](#refer-anchor-4) |
-| G16 | G16 | high accurate |
+| xTB | geomeTRIC | free |
+| xTB | G16 | fast[<sup>4</sup>](#refer-anchor-4) |
+| G16 | G16 | accurate |
 
 ## Dependencies
 - Python 3.8.18
