@@ -33,7 +33,7 @@ python thermo_dG_calc.py --working_dir ./eg_1 --string_type smiles --rct_inf_lst
 ### Example 2 
 Use **G16** as the calculation engine and **G16** as the structure optimizer, input string is **SMILES**:
 ```
-python thermo_dG_calc.py --working_dir ./eg_2 --string_type smiles --rct_inf_lst "[('C',1),('ClCl',1)]" --pdt_inf_lst "[('CCl',1),('Cl',1)]" --engine xtb --optimizer g16 --solvent water --threads_num 8 --memory 8GB
+python thermo_dG_calc.py --working_dir ./eg_2 --string_type smiles --rct_inf_lst "[('C',1),('ClCl',1)]" --pdt_inf_lst "[('CCl',1),('Cl',1)]" --engine g16 --optimizer g16 --solvent water --threads_num 8 --memory 8GB
 ```
 ### Example 3 
 Use **xTB** as the calculation engine and **geomeTRIC** as the structure optimizer, input string is **InChI**:
