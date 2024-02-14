@@ -3,6 +3,10 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 from subprocess import run,PIPE
 from utils import gen_xtb_sh
+
+HA2KCAL = 627.503
+CWD = os.getcwd()
+
 def mol2xyz(mol,xyz_file):
     '''
     将RDKit的分子对象Mol保存成.xyz分子文件
@@ -60,8 +64,6 @@ def mol2gjf(mol,gjf_file,solvent='',chrg=0,mult=1,g16_param={'method':'b3lyp','b
     with open(gjf_file,'w') as fw:
         fw.writelines('\n'.join(gjf_inform))
 
-HA2KCAL = 627.503
-CWD = os.getcwd()
 class Mole():
     def __init__(self,inchi=None,smiles=None,working_dir='.',fn='temp',chrg=0,mult=1,optimizer='G16',engine='G16',solvent='',
                  xtb_param={'gfn':2,'thread':8},g16_param={'method':'b3lyp','basis':'def2svp','nproc':8,'mem':'8GB'}):

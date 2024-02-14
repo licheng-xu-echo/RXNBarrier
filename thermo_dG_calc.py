@@ -28,6 +28,8 @@ def main():
     parser.add_argument('--solvent',type=str,default='',help='solvent')
     parser.add_argument('--engine',type=str,default='g16',help='quantum chemical calculation engine')
     parser.add_argument('--optimizer',type=str,default='g16',help='optimizer for geometry optimization')
+    parser.add_argument('--threads_num',type=int,default=8,help='threads number')
+    parser.add_argument('--memory',type=str,default='8GB',help='memory')
 
     args = parser.parse_args()
     working_dir = args.working_dir
@@ -36,8 +38,13 @@ def main():
     string_type = args.string_type.lower()
     engine = args.engine.lower()
     optimizer = args.optimizer.lower()
-
+    threads_num = args.threads_num
+    mem = args.memory
     solvent = args.solvent
+
+    xtb_param = {'gfn':2,'thread':threads_num}
+    g16_param = {'method':'b3lyp','basis':'def2svp','nproc':threads_num,'mem':mem}
+
     assert string_type in ['smiles','inchi'], "only support SMILES and InChI string type"
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
@@ -47,16 +54,16 @@ def main():
     pdt_gibbs_lst = []
     for i,rct_inf in enumerate(rct_inf_lst):
         if string_type == 'smiles':
-            mol = Mole(smiles=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer)
+            mol = Mole(smiles=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
-            mol = Mole(inchi=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer)
+            mol = Mole(inchi=rct_inf[0],fn=f'rct_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         rct_gibbs_sum += mol.run() * rct_inf[1]
         rct_gibbs_lst.append(mol.gibbs)
     for i,pdt_inf in enumerate(pdt_inf_lst):
         if string_type == 'smiles':
-            mol = Mole(smiles=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer)
+            mol = Mole(smiles=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         else:
-            mol = Mole(inchi=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer)
+            mol = Mole(inchi=pdt_inf[0],fn=f'pdt_{i}.xyz',working_dir=working_dir,solvent=solvent,engine=engine,optimizer=optimizer,xtb_param=xtb_param,g16_param=g16_param)
         pdt_gibbs_sum += mol.run() * pdt_inf[1]
         pdt_gibbs_lst.append(mol.gibbs)
     delta_gibbs = pdt_gibbs_sum - rct_gibbs_sum
