@@ -1,4 +1,4 @@
-import argparse,time
+import argparse,time,os
 from mol import Mole
 
 
@@ -23,6 +23,8 @@ def main():
     threads_num = args.threads_num
     mem = args.memory
     solvent = args.solvent
+    if not os.path.exists(working_dir):
+        os.makedirs(working_dir)
     xtb_param = {'gfn':2,'thread':threads_num}
     g16_param = {'method':'b3lyp','basis':'def2svp','nproc':threads_num,'mem':mem}
     if string_type == 'smiles':
