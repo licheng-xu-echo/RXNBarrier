@@ -9,14 +9,14 @@ CWD = os.getcwd()
 
 def mol2xyz(mol,xyz_file):
     '''
-    将RDKit的分子对象Mol保存成.xyz分子文件
+    Save the RDKit molecule object Mol as a .xyz molecular file.
 
     Parameters
     ----------
     mol : TYPE
-        RDKit的分子对象.
+        RDKit Mol object.
     xyz_file : string
-        .xyz文件路径.
+        .xyz file path.
 
     Returns
     -------
@@ -34,16 +34,16 @@ def mol2xyz(mol,xyz_file):
 def mol2gjf(mol,gjf_file,solvent='',chrg=0,mult=1,g16_param={'method':'b3lyp','basis':'def2svp',
                                     'nproc':'8','mem':'8GB'},engine='g16'):
     '''
-    将RDKit的分子对象Mol保存成.gjf分子文件
+    Save the RDKit molecule object Mol as a .gjf molecular file.
 
     Parameters
     ----------
     mol : TYPE
-        RDKit的分子对象.
+        RDKit Mol object.
     gjf_file : string
-        .gjf文件路径.
+        .gjf file path.
     g16_param: Dict
-        G16计算参数
+        G16 parameters
     Returns
     -------
     None.
@@ -249,16 +249,12 @@ class Mole():
             Gibbs free energy.
 
         '''
-        # 获得初始化3D几何结构
         print('[INFO] Generate 3D geometry...')
         self.gen_3d_geom()
-        # 优化分子结构并进行频率计算
         print('[INFO] Optimize 3D geometry and frequency calculation...')
         self.opt_freq()
-        # 检查任务是否正常结束
         calc_done = self.check_log()
         if calc_done:
-            # 读取分子吉布斯自由能
             self.gibbs = self.read_free_energy()
             print(f'[INFO] Gibbs free energy: {self.gibbs:.2f} kcal/mol')
         else:
