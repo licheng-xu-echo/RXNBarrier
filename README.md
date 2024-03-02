@@ -14,6 +14,7 @@ The quantum calculation engine within can be selected to use either G16[<sup>1</
 | G16 | G16 | accurate |
 
 ## Dependencies
+The following software packages are required to run the code in this repository:
 - Python 3.8.18
 - pandas 2.0.3
 - RDKit 2022.9.5
@@ -22,6 +23,9 @@ The quantum calculation engine within can be selected to use either G16[<sup>1</
 - geometric 1.0.1
 - ase 3.22.1
 - Gaussian 16 (optional)
+
+## Installation
+Execute the command within the project directory ('RXNBarrier' folder), to install `rxnb` as a package:
 
 ## Usage
 For reaction thermodynamic free energy barrier calculations, users can run the following command:
