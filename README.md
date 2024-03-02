@@ -6,12 +6,12 @@ This repository hosts a suite of scripts designed for comprehensive end-to-end r
 
 The code in this repository can currently be used to complete the end-to-end calculation of reaction thermodynamic free energy barrier. In the near feature, we will also add the ability to perform calculations of reaction kinetic free energy barrier.
 
-The quantum calculation engine within can be selected to use either G16[`<sup>`1`</sup>`](#refer-anchor-1) or xTB[`<sup>`2`</sup>`](#refer-anchor-2), and the structure optimizer can be chosen from either G16 or geomeTRIC[`<sup>`3`</sup>`](#refer-anchor-3). Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
+The quantum calculation engine within can be selected to use either G16[<sup>1</sup>](#refer-anchor-1) or xTB[<sup>2</sup>](#refer-anchor-2), and the structure optimizer can be chosen from either G16 or geomeTRIC[<sup>3</sup>](#refer-anchor-3). Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
 
 | Engine | Optimizer | Features                                 |
 | ------ | --------- | ---------------------------------------- |
 | xTB    | geomeTRIC | free                                     |
-| xTB    | G16       | fast[`<sup>`4`</sup>`](#refer-anchor-4) |
+| xTB    | G16       | fast[<sup>4</sup>](#refer-anchor-4) |
 | G16    | G16       | accurate                                 |
 
 ## Dependencies
