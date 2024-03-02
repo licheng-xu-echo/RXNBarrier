@@ -1,5 +1,5 @@
 import argparse,time,os
-from mol import Mole
+from rxnb.mol import Mole
 
 
 def main():

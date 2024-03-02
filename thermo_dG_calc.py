@@ -1,6 +1,6 @@
 import os,argparse,time
 import pandas as pd
-from mol import Mole
+from rxnb.mol import Mole
 
 def main():
     '''
