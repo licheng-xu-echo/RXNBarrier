@@ -99,6 +99,7 @@ class Mole():
             Parameters for xTB methods
         g16_param : Dict
             Parameters for G16 methods
+            
         Returns
         -------
         Molecule object.
