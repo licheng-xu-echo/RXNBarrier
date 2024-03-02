@@ -26,6 +26,9 @@ The following software packages are required to run the code in this repository:
 
 ## Installation
 Execute the command within the project directory ('RXNBarrier' folder), to install `rxnb` as a package:
+```
+pip install .
+```
 
 ## Usage
 For reaction thermodynamic free energy barrier calculations, users can run the following command:
