@@ -82,6 +82,33 @@ class G16LOG():
         self.atom_types = atom_types
         return atom_types, coords
     
+    def read_therm_inf(self):
+        '''
+        Read thermal correction information
+        
+        Returns
+        -------
+        TCG : float
+            Thermal correction to Gibbs Free Energy
+        TCH : float
+            Thermal correction to Enthalpy
+        '''
+        
+        assert 'freq' in self.types, "No 'freq' in `types` parameter"
+        TCH = 0
+        TCG = 0
+        for line in self.loginf:
+            if 'Thermal correction to Enthalpy' in line:
+                TCH = eval(line.strip().split()[4])
+            if 'Thermal correction to Gibbs Free Energy' in line:
+                TCG = eval(line.strip().split()[6])
+        if TCH == 0 or TCG == 0:
+            raise ValueError('Thermal correction information not found')
+        
+        self.TCH = TCH
+        self.TCG = TCG
+        return TCG,TCH
+        
     def is_valid_statpt(self,tgt_type='normal'):
         assert 'freq' in self.types, "No 'freq' in `types` parameter"
         assert tgt_type in ['normal','ts'], "`tgt_type` should be 'normal' or 'ts'"
