@@ -2,7 +2,7 @@ import os
 from rdkit import Chem
 from rdkit.Chem import AllChem
 from subprocess import run,PIPE
-from utils import gen_xtb_sh
+from .utils import gen_xtb_sh
 
 HA2KCAL = 627.503
 CWD = os.getcwd()
