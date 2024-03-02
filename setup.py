@@ -10,11 +10,16 @@ setup(
     author_email='licheng_xu@zju.edu.cn',  
     url='https://github.com/licheng-xu-echo/RXNBarrier',  
     install_requires=[  
-        'xtb-python >= 22.1',
         'rdkit >= 2022.3.3',
         'ase >= 3.22.1',
-        'pandas >= 2.0.3'
+        'pandas >= 2.0.3',
+        'geometric >= 1.0.1'
     ],
+    extras_require={
+        'conda': [
+            'xtb-python',
+        ]
+    },
     license="MIT",
     python_requires=">=3.8",
     # 其他参数
