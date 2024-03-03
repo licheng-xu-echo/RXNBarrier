@@ -37,9 +37,10 @@ pip install .
 
 ## Usage
 
-For reaction thermodynamic free energy barrier calculations, users can run the following command in `scripts` folder:
+### Thermodynamic free energy barrier calculations
+For reaction thermodynamic free energy barrier calculations, users can run the following command Eg. 1 to Eg. 4 in `scripts` folder:
 
-### Example 1
+#### Example 1
 
 Use **xTB** as the calculation engine and **G16** as the structure optimizer, input string is **SMILES**:
 
@@ -47,7 +48,7 @@ Use **xTB** as the calculation engine and **G16** as the structure optimizer, in
 python thermo_dG_calc.py --working_dir ./eg_1 --string_type smiles --rct_inf_lst "[('Cc(c(F)cc1)c2c1cc([C@@H](NC(OC(C)(C)C)=O)C)c(Cl)n2',1),('CN(C(CN1CCNCC1)=O)C',1)]" --pdt_inf_lst "[('Cc(c(F)cc1)c2c1cc([C@@H](NC(OC(C)(C)C)=O)C)c(N3CCN(CC3)CC(N(C)C)=O)n2',1),('[H]Cl',1)]" --engine xtb --optimizer g16 --solvent water --threads_num 8 --memory 8GB
 ```
 
-### Example 2
+#### Example 2
 
 Use **G16** as the calculation engine and **G16** as the structure optimizer, input string is **SMILES**:
 
@@ -55,7 +56,7 @@ Use **G16** as the calculation engine and **G16** as the structure optimizer, in
 python thermo_dG_calc.py --working_dir ./eg_2 --string_type smiles --rct_inf_lst "[('C',1),('ClCl',1)]" --pdt_inf_lst "[('CCl',1),('Cl',1)]" --engine g16 --optimizer g16 --solvent water --threads_num 8 --memory 8GB
 ```
 
-### Example 3
+#### Example 3
 
 Use **xTB** as the calculation engine and **geomeTRIC** as the structure optimizer, input string is **InChI**:
 
@@ -63,12 +64,30 @@ Use **xTB** as the calculation engine and **geomeTRIC** as the structure optimiz
 python thermo_dG_calc.py --working_dir ./eg_3 --string_type inchi --rct_inf_lst "[('InChI=1S/C14H12O2/c15-13-8-12(9-14(16)10-13)7-6-11-4-2-1-3-5-11/h1-10,15-16H',1),('InChI=1S/O2/c1-2',1/2)]" --pdt_inf_lst "[('InChI=1S/C14H12O3/c15-12-5-3-10(4-6-12)1-2-11-7-13(16)9-14(17)8-11/h1-9,15-17H',1)]" --engine xtb --optimizer geometric --threads_num 8
 ```
 
-### Example 4
+#### Example 4
 
 To calculate the Gibbs free energy of a single molecule, execute the following command:
 
 ```
 python G_calc.py --working_dir ./eg_4 --string c1ccccc1 --string_type smiles --engine xtb --optimizer g16 --solvent water --threads_num 8 --memory 8GB
+```
+
+### G16 log file parser
+
+#### Example 5
+
+```python
+from rxnb.analyse import G16Log_Parser
+log_file = './example/test-ts.log'
+g16parser = G16Log_Parser(log_file,types=['sp','freq','opt'])
+# Check if the stationary point is valid
+print(g16parser.is_valid_statpt(key_bond=[1,23],tsk_type='ts',th=1.0))
+# Read single point energy
+print(g16parser.read_energy())
+# Read the optimized geometry
+atom_types, coords = g16parser.read_opted_geom()
+# Read the thermal correction information
+TCG, TCH = g16parser.read_therm_inf()
 ```
 
 <div id="refer-anchor-1"></div>
