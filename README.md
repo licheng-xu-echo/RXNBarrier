@@ -27,6 +27,12 @@ The following software packages are required to run the code in this repository:
 - ase 3.22.1
 - Gaussian 16 (optional)
 
+You can run commands below to install these packages
+```
+pip install rdkit-pypi ase pandas geometric
+conda install xtb-python -c conda-forge
+```
+
 ## Installation
 
 Execute the command within the project directory ('RXNBarrier' folder), to install `rxnb` as a package:
