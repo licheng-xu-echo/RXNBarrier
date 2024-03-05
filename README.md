@@ -29,6 +29,8 @@ The following software packages are required to run the code in this repository:
 
 You can run commands below to install these packages
 ```
+conda create -n rxnb python=3.8
+conda activate rxnb
 pip install rdkit-pypi ase pandas geometric
 conda install xtb-python -c conda-forge
 ```
