@@ -31,7 +31,7 @@ You can run commands below to install these packages
 ```
 conda create -n rxnb python=3.8
 conda activate rxnb
-pip install rdkit-pypi ase pandas geometric
+pip install rdkit ase pandas geometric
 conda install xtb-python -c conda-forge
 ```
 
