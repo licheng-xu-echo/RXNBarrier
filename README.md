@@ -1,9 +1,9 @@
 # RXNBarrier
 
-# Table of Contents
+## Table of Contents
 
 - [RXNBarrier](#rxnbarrier)
-- [Table of Contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [Introduction](#introduction)
   - [Dependencies](#dependencies)
   - [Installation](#installation)
