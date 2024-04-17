@@ -123,7 +123,7 @@ TCG, TCH = g16parser.read_therm_inf()
 
 ```python
 from rxnb.engine import ASEOptimizer
-opt = ASEOptimizer(filename='/home/echo/Downloads/RXNBarrier/example/benzene.xyz',engine='xtb',engine_params={'method':'GFN2'},optimizer='bfgs')
+opt = ASEOptimizer(filename='./example/benzene.xyz',engine='xtb',engine_params={'method':'GFN2'},optimizer='bfgs')
 opt.set_optimizer()
 opt.run()
 opt.save_xyz()  # save the optimized geometry
