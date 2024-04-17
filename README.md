@@ -1,5 +1,21 @@
 # RXNBarrier
 
+# Table of Contents
+
+- [RXNBarrier](#rxnbarrier)
+- [Table of Contents](#table-of-contents)
+  - [Introduction](#introduction)
+  - [Dependencies](#dependencies)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Thermodynamic free energy barrier calculations](#thermodynamic-free-energy-barrier-calculations)
+      - [Example 1](#example-1)
+      - [Example 2](#example-2)
+      - [Example 3](#example-3)
+      - [Example 4](#example-4)
+    - [G16 log file parser](#g16-log-file-parser)
+      - [Example 5](#example-5)
+
 ## Introduction
 
 This repository hosts a suite of scripts designed for comprehensive end-to-end reaction barrier calculations.
