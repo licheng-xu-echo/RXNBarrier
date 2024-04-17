@@ -45,7 +45,7 @@ class ASEOptimizer(object):
             raise ValueError("Optimizer not set.")
         opt.run(fmax=fmax,steps=steps)
     
-    def write_xyz(self, filename=None):
+    def save_xyz(self, filename=None):
         if filename is None:
             filename = f'{self.fn}.xyz'
         '''

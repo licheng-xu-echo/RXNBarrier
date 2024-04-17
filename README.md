@@ -15,6 +15,9 @@
       - [Example 4](#example-4)
     - [G16 log file parser](#g16-log-file-parser)
       - [Example 5](#example-5)
+    - [Molecule optimization with different method](#molecule-optimization-with-different-method)
+      - [Example 6](#example-6)
+  - [Reference](#reference)
 
 ## Introduction
 
@@ -113,6 +116,20 @@ atom_types, coords = g16parser.read_opted_geom()
 # Read the thermal correction information
 TCG, TCH = g16parser.read_therm_inf()
 ```
+
+### Molecule optimization with different method
+
+#### Example 6
+
+```python
+from rxnb.engine import ASEOptimizer
+opt = ASEOptimizer(filename='/home/echo/Downloads/RXNBarrier/example/benzene.xyz',engine='xtb',engine_params={'method':'GFN2'},optimizer='bfgs')
+opt.set_optimizer()
+opt.run()
+opt.save_xyz()  # save the optimized geometry
+```
+
+## Reference
 
 <div id="refer-anchor-1"></div>
 
