@@ -1,6 +1,6 @@
 import os
 
-def gen_xtb_sh(xtb_sh='./xtb.sh',thread_num=28,gfn=0):
+def gen_xtb_sh(xtb_sh='./xtb.sh',thread_num=28,gfn=0,xtb_path='xtb'):
     inf = ['#!/bin/bash',
            '',
            '#This script was written by Dr. Tian Lu at Beijing Kein Research Center for Natural Sciences (www.keinsci.com)',
@@ -28,10 +28,10 @@ def gen_xtb_sh(xtb_sh='./xtb.sh',thread_num=28,gfn=0):
            'uhf=`echo "$spin-1" | bc` #nalpha-nbeta',
            'if [ $derivs == "2" ] ; then',
            '    echo "Running: xtb mol.xyz --chrg $charge --uhf $uhf --gfn%d --hess --grad > xtbout"'%gfn,
-           '    xtb mol.xyz --chrg $charge --uhf $uhf --gfn%d --hess --grad > xtbout'%gfn,
+           f'    {xtb_path} mol.xyz --chrg $charge --uhf $uhf --gfn{gfn} --hess --grad > xtbout',
            'elif [ $derivs == "1" ] ; then',
            '    echo "Running: xtb mol.xyz --chrg $charge --uhf $uhf --gfn%d --grad > xtbout"'%gfn,
-           '    xtb mol.xyz --chrg $charge --uhf $uhf --gfn%d --grad > xtbout'%gfn,
+           f'    {xtb_path} mol.xyz --chrg $charge --uhf $uhf --gfn{gfn} --grad > xtbout',
            'fi',
            'echo "xtb running finished!"',
            '',
