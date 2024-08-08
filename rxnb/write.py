@@ -1,5 +1,25 @@
 import os
 
+def write_gjf(symbols,positions,file_path,
+              kwd_line="#p freq external='../xtbgfn2.sh'",
+              chrg=0,mult=1):
+    config_inf = [
+                 f'%chk={os.path.basename(file_path)[:-4]}.chk',
+                 kwd_line,
+                 '',
+                 'Generate automatically by rxnb',
+                 '',
+                 f'{chrg} {mult}']
+    
+    geom_inf = []
+    for sym,xyz in zip(symbols,positions):
+        geom_inf.append(f'{sym:5s} {xyz[0]:15f} {xyz[1]:15f} {xyz[2]:15f}')
+    
+    tot_inf = config_inf + geom_inf + [''] + [''] + ['']
+    
+    with open(file_path,'w') as fw:
+        fw.writelines('\n'.join(tot_inf))
+
 def write_mod_ts_gjf(symbols,positions,file_path,fixed_inf_lst=[[11,18],[18,19]],
                  params={'method':'b3lyp','basis':'def2svp','nproc':'8','mem':'8GB'},
                  chrg=0,mult=1):
@@ -35,7 +55,6 @@ def write_mod_ts_gjf(symbols,positions,file_path,fixed_inf_lst=[[11,18],[18,19]]
     with open(file_path,'w') as fw:
         fw.writelines('\n'.join(tot_inf))
         
-
 def write_mod_gjf(symbols,positions,file_path,fixed_inf_lst=[[11,18],[18,19]],
                       kwd_line="#p opt=(modredundant,nomicro) external='../xtbgfn2.sh'",
                       chrg=0,mult=1):
