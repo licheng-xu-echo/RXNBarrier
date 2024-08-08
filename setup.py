@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rxnb',  
-    version='0.2',  
+    version='0.3',  
     packages=find_packages("."),  
     description='Package for calculating reaction barrier',
     long_description=open('README.md').read(),
