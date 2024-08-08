@@ -1,6 +1,6 @@
 import os
 
-def gen_xtb_sh(xtb_sh='./xtb.sh',thread_num=28,gfn=0,xtb_path='xtb'):
+def gen_xtb_sh(xtb_sh='./xtb.sh',thread_num=28,gfn=2,xtb_path='xtb'):
     inf = ['#!/bin/bash',
            '',
            '#This script was written by Dr. Tian Lu at Beijing Kein Research Center for Natural Sciences (www.keinsci.com)',
