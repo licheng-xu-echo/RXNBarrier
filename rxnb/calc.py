@@ -20,8 +20,11 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,
     mod_opt_cmd = f'g16 {mod_opt_gjf_file} {mod_opt_log_file}'
     run(mod_opt_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False) ## 执行固定优化
     print("[INFO] (1/4) Constrained optimization finished")
-    
-    mod_opted_mol = AutoParser(mod_opt_log_file)[0][-1]
+    try:
+        mod_opted_mol = AutoParser(mod_opt_log_file)[0][-1]
+    except:
+        print("[ERROR] Constrained optimization failed")
+        return
     if not mod_opted_mol.is_optimized:
         print("[ERROR] Constrained optimization failed")
         return
@@ -54,7 +57,11 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,
     ts_opt_cmd = f'g16 {ts_opt_gjf_file} {ts_opt_log_file}'
     run(ts_opt_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行TS优化计算
     print("[INFO] (3/4) TS optimization finished")
-    ts_opted_mol = AutoParser(ts_opt_log_file)[0][-1]
+    try:
+        ts_opted_mol = AutoParser(ts_opt_log_file)[0][-1]
+    except:
+        print("[ERROR] TS optimization failed")
+        return
     if not ts_opted_mol.is_optimized:
         print("[ERROR] TS optimization failed")
         return
