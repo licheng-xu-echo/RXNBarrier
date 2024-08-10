@@ -25,12 +25,12 @@ This repository hosts a suite of scripts designed for comprehensive end-to-end r
 
 The code in this repository can currently be used to complete the end-to-end calculation of reaction thermodynamic free energy barrier. In the near feature, we will also add the ability to perform calculations of reaction kinetic free energy barrier.
 
-The quantum calculation engine within can be selected to use either G16[<sup>1</sup>](#refer-anchor-1) or xTB[<sup>2</sup>](#refer-anchor-2), and the structure optimizer can be chosen from either G16 or geomeTRIC[<sup>3</sup>](#refer-anchor-3). Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
+The quantum calculation engine within can be selected to use either G16[`<sup>`1`</sup>`](#refer-anchor-1) or xTB[`<sup>`2`</sup>`](#refer-anchor-2), and the structure optimizer can be chosen from either G16 or geomeTRIC[`<sup>`3`</sup>`](#refer-anchor-3). Thus, users can set the calculation engine and optimizer based on their own conditions and requirements.
 
 | Engine | Optimizer | Features                                 |
 | ------ | --------- | ---------------------------------------- |
 | xTB    | geomeTRIC | free                                     |
-| xTB    | G16       | fast[<sup>4</sup>](#refer-anchor-4) |
+| xTB    | G16       | fast[`<sup>`4`</sup>`](#refer-anchor-4) |
 | G16    | G16       | accurate                                 |
 
 ## Dependencies
@@ -45,8 +45,10 @@ The following software packages are required to run the code in this repository:
 - geometric 1.0.1
 - ase 3.22.1
 - Gaussian 16 (optional)
+- [MolOP](https://github.com/gentle1999/MolOP)
 
 You can run commands below to install these packages
+
 ```
 conda create -n rxnb python=3.8
 conda activate rxnb
@@ -65,6 +67,7 @@ pip install .
 ## Usage
 
 ### Thermodynamic free energy barrier calculations
+
 For reaction thermodynamic free energy barrier calculations, users can run the following command Eg. 1 to Eg. 4 in `scripts` folder:
 
 #### Example 1
