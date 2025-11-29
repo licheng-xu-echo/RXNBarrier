@@ -5,7 +5,7 @@ from .write import write_mod_gjf,write_gjf
 from molop import AutoParser,molopconfig
 molopconfig.quiet()
 
-def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt_from_step=1,loose=False,
+def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt_from_step=1,loose=False,gaussian_exe='g16',
                     mod_opt_gjf_file="1-modopt.gjf",mod_opt_log_file="1-modopt.log",
                     mod_freq_gjf_file="2-modfreq.gjf",mod_freq_log_file="2-modfreq.log",
                     ts_opt_gjf_file="3-tsopt.gjf",ts_opt_log_file="3-tsopt.log",
@@ -22,7 +22,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
                         kwd_line=mod_opt_kwd_line,
                         chrg=charge,mult=multiplicity)           ## 生成固定优化的计算文件
 
-        mod_opt_cmd = f'g16 {mod_opt_gjf_file} {mod_opt_log_file}'
+        mod_opt_cmd = f'{gaussian_exe} {mod_opt_gjf_file} {mod_opt_log_file}'
         run(mod_opt_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False) ## 执行固定优化
         print("[INFO] (1/4) Constrained optimization finished")
         try:
@@ -41,7 +41,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
         write_gjf(symbols,mod_opted_coords,mod_freq_gjf_file,
                     kwd_line="#p freq external='./xtb.sh'",
                     chrg=charge,mult=multiplicity)   ## 生成频率的计算文件
-        mod_freq_cmd = f'g16 {mod_freq_gjf_file} {mod_freq_log_file}'
+        mod_freq_cmd = f'{gaussian_exe} {mod_freq_gjf_file} {mod_freq_log_file}'
         run(mod_freq_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行频率计算
         print("[INFO] (2/4) Frequency calculation finished")
 
@@ -63,7 +63,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
         write_gjf(symbols,mod_opted_coords,ts_opt_gjf_file,
                     kwd_line=ts_opt_kwd_line,
                     chrg=charge,mult=multiplicity)   ## 生成TS优化的计算文件
-        ts_opt_cmd = f'g16 {ts_opt_gjf_file} {ts_opt_log_file}'
+        ts_opt_cmd = f'{gaussian_exe} {ts_opt_gjf_file} {ts_opt_log_file}'
         run(ts_opt_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行TS优化计算
         print("[INFO] (3/4) TS optimization finished")
         try:
@@ -81,7 +81,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
         write_gjf(symbols,ts_opted_coords,ts_freq_gjf_file,
                     kwd_line="#p freq external='./xtb.sh'",
                     chrg=charge,mult=multiplicity)   ## 生成频率的计算文件
-        ts_freq_cmd = f'g16 {ts_freq_gjf_file} {ts_freq_log_file}'
+        ts_freq_cmd = f'{gaussian_exe} {ts_freq_gjf_file} {ts_freq_log_file}'
         run(ts_freq_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行频率计算
         print("[INFO] (4/4) Frequency calculation finished")
 
@@ -101,7 +101,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
         write_gjf(symbols,init_coords,ts_opt_gjf_file,
                     kwd_line="#p opt(ts,calcfc,noeigen,nomicro) external='./xtb.sh'",
                     chrg=charge,mult=multiplicity)   ## 生成TS优化的计算文件
-        ts_opt_cmd = f'g16 {ts_opt_gjf_file} {ts_opt_log_file}'
+        ts_opt_cmd = f'{gaussian_exe} {ts_opt_gjf_file} {ts_opt_log_file}'
         run(ts_opt_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行TS优化计算
         print("[INFO] (3/4) TS optimization finished")
         try:
@@ -119,7 +119,7 @@ def perform_xtbts_calc(symbols,init_coords,charge,multiplicity,fixed_inf_lst,opt
         write_gjf(symbols,ts_opted_coords,ts_freq_gjf_file,
                     kwd_line="#p freq external='./xtb.sh'",
                     chrg=charge,mult=multiplicity)   ## 生成频率的计算文件
-        ts_freq_cmd = f'g16 {ts_freq_gjf_file} {ts_freq_log_file}'
+        ts_freq_cmd = f'{gaussian_exe} {ts_freq_gjf_file} {ts_freq_log_file}'
         run(ts_freq_cmd,stdout=PIPE,stderr=PIPE,universal_newlines=True,cwd=None,shell=True,executable='/bin/bash',check=False)  ## 执行频率计算
         print("[INFO] (4/4) Frequency calculation finished")
 
